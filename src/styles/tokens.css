@@ -1,0 +1,90 @@
+/*
+ * Let Her Cook — design tokens
+ *
+ * "Farmers' market" palette on warm paper. Color carries meaning: each course
+ * has its own hue (see lib/courseColors.ts), so a shelf of recipes reads at a
+ * glance. Strong hues are used for marks, rules, numerals and fills; the
+ * matching "-ink" shades are the only ones used for small text, and all pass
+ * WCAG AA on paper and on their own "-wash" backgrounds.
+ */
+:root {
+  --cream: #fbf4e6;
+  --paper: #fffbf3;
+  --ink: #22231f;
+  --ink-soft: #3f413a;
+  --muted: #66665c;
+  --border: #eadfcb;
+  --border-strong: #d6c8ae;
+
+  --tomato: #e2543a;
+  --tomato-ink: #b0381f;
+  --tomato-wash: #fde3da;
+
+  --marigold: #f2ae2e;
+  --marigold-ink: #8a5a00;
+  --marigold-wash: #fdeec8;
+
+  --herb: #3d8c57;
+  --herb-ink: #2b6b40;
+  --herb-wash: #dcf0dc;
+
+  --blueberry: #4357c9;
+  --blueberry-ink: #3343a8;
+  --blueberry-wash: #e1e6fb;
+
+  --fig: #8f3b70;
+  --fig-ink: #7a2f5e;
+  --fig-wash: #f4dfec;
+
+  --grapefruit: #f0768a;
+  --grapefruit-ink: #a8344a;
+  --grapefruit-wash: #fde2e6;
+
+  --olive: #7b7d46;
+  --olive-ink: #5c5e2f;
+  --olive-wash: #ecedd6;
+
+  --butter: #ffe28a;
+
+  --focus: #3343a8;
+  --danger: #b0281f;
+  --success: #2b6b40;
+
+  --font-display: 'Newsreader Variable', 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-1: 1.1875rem;
+  --step-2: 1.4375rem;
+  --step-3: 1.875rem;
+  --step-4: 2.5rem;
+  --step-5: clamp(2.6rem, 2rem + 3vw, 4.5rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  --radius-s: 6px;
+  --radius-m: 10px;
+  --radius-l: 18px;
+
+  --shadow-card: 0 1px 0 rgba(34, 35, 31, 0.05), 0 10px 24px -14px rgba(34, 35, 31, 0.28);
+  --shadow-pop: 0 24px 60px -20px rgba(34, 35, 31, 0.4);
+
+  --sidebar-w: 268px;
+  --content-max: 1200px;
+  --tap: 44px;
+
+  /* Per-course accent, overridden inline: --c (strong), --c-ink (text), --c-wash (background) */
+  --c: var(--tomato);
+  --c-ink: var(--tomato-ink);
+  --c-wash: var(--tomato-wash);
+
+  color-scheme: light;
+}
