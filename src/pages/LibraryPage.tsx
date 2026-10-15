@@ -141,7 +141,7 @@ export function LibraryPage({ view }: { view: View }) {
       </header>
       )}
 
-      {view === 'all' && <DemoBanner count={sampleCount} />}
+      <DemoBanner count={sampleCount} />
 
       {base.length > 0 && (
         <section className="finder" aria-label="Search and filter">

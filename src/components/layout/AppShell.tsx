@@ -2,6 +2,7 @@ import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
 import { BookOpen, FolderHeart, Heart, Clock3, Plus, ShieldCheck } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Walla, Wordmark } from '../ui/Wordmark';
+import { ExitDemoButton } from '../home/Discover';
 import { useLibrary } from '../../lib/storage/LibraryContext';
 
 const NAV = [
@@ -16,6 +17,7 @@ export function AppShell() {
   const location = useLocation();
   const mainRef = useRef<HTMLElement>(null);
   const favoriteCount = recipes.filter((r) => r.isFavorite).length;
+  const sampleCount = recipes.filter((r) => r.isSample).length;
 
   // Move focus to the page on navigation so screen readers announce the new view.
   const first = useRef(true);
@@ -45,6 +47,12 @@ export function AppShell() {
           </span>
           <span className="btn__label">Add recipe</span>
         </Link>
+        {sampleCount > 0 && (
+          <div className="sidebar__demo">
+            <span>Demo mode</span>
+            <ExitDemoButton variant="secondary" />
+          </div>
+        )}
 
         <nav aria-label="Library">
           <ul className="sidebar__nav">
@@ -100,9 +108,12 @@ export function AppShell() {
         <Link to="/" aria-label="Let Her Cook — my recipes">
           <Wordmark size="sm" />
         </Link>
-        <Link to="/data" className="icon-btn icon-btn--ghost icon-btn--md" aria-label="Backup and privacy" title="Backup & privacy">
-          <ShieldCheck size={20} aria-hidden="true" />
-        </Link>
+        <div className="mobile-header__actions">
+          {sampleCount > 0 && <ExitDemoButton />}
+          <Link to="/data" className="icon-btn icon-btn--ghost icon-btn--md" aria-label="Backup and privacy" title="Backup & privacy">
+            <ShieldCheck size={20} aria-hidden="true" />
+          </Link>
+        </div>
       </header>
 
       <main id="main" ref={mainRef} tabIndex={-1} className="main">

@@ -1925,3 +1925,24 @@
     gap: var(--space-6);
   }
 }
+
+.sidebar__demo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.9rem;
+  border-radius: var(--pill);
+  background: var(--butter-wash);
+  color: var(--butter-ink);
+  font-weight: 800;
+  font-size: var(--step--1);
+}
+.mobile-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.demo-banner .exit-demo {
+  flex: none;
+}

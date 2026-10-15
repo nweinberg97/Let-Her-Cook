@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Clock3, ChefHat, Link2, ImageIcon, FileText, PenLine, Sparkles, ArrowRight } from 'lucide-react';
+import { Clock3, ChefHat, Link2, ImageIcon, FileText, PenLine, Sparkles, ArrowRight, LogOut } from 'lucide-react';
 import { effectiveTotalMinutes, type Recipe } from '../../types/recipe';
 import { formatMinutes } from '../../lib/parsing/quantity';
 import { courseStyle, hueStyle, type Hue } from '../../lib/courseColors';
@@ -192,8 +192,9 @@ export function useSampleActions() {
   const remove = async () => {
     setBusy(true);
     try {
-      const n = await removeSampleRecipes(repo);
-      toast.success(`Removed ${n} sample recipes. Your own recipes weren’t touched.`);
+      await removeSampleRecipes(repo);
+      navigate('/');
+      toast.success('You’ve left the demo. Your own recipes weren’t touched.');
     } catch (err) {
       toast.error(storageErrorMessage(err));
     } finally {
@@ -203,18 +204,25 @@ export function useSampleActions() {
   return { add, remove, busy };
 }
 
-export function DemoBanner({ count }: { count: number }) {
+/** The always-visible way out of the demo, shown in the sidebar, phone header and banner. */
+export function ExitDemoButton({ size = 'sm', variant = 'primary' }: { size?: 'sm' | 'md'; variant?: 'primary' | 'secondary' }) {
   const { remove, busy } = useSampleActions();
+  return (
+    <Button size={size} variant={variant} icon={<LogOut size={16} />} onClick={remove} disabled={busy} className="exit-demo">
+      {busy ? 'Leaving…' : 'Exit demo'}
+    </Button>
+  );
+}
+
+export function DemoBanner({ count }: { count: number }) {
   if (!count) return null;
   return (
     <div className="demo-banner" role="note">
       <WallaHeadMark size={40} />
       <p>
-        You’re looking at {count} of Walla’s sample recipes. Explore, cook and scale them — then add your own.
+        You’re in the demo, looking at {count} of Walla’s sample recipes. Explore, cook and scale them. When you’re done, exit the demo to start your own collection.
       </p>
-      <Button size="sm" variant="secondary" onClick={remove} disabled={busy}>
-        Remove samples
-      </Button>
+      <ExitDemoButton />
     </div>
   );
 }
