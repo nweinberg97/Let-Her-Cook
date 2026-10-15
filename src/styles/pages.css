@@ -1946,3 +1946,6 @@
 .demo-banner .exit-demo {
   flex: none;
 }
+.sidebar__demo span {
+  white-space: nowrap;
+}
