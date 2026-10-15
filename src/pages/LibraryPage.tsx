@@ -189,7 +189,7 @@ export function LibraryPage({ view }: { view: View }) {
             </div>
           </div>
 
-          {courseOptions.length > 1 && (
+          {courseOptions.length > 1 && !discover && (
             <div className="chip-row" role="group" aria-label="Course">
               {courseOptions.map((c) => (
                 <button key={c} type="button" className="chip chip--course" style={courseStyle(c)} aria-pressed={filters.courses.includes(c)} onClick={() => toggleMulti('course', c)}>

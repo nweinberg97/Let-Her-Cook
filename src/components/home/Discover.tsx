@@ -78,11 +78,7 @@ export function CategoryBubbles({ recipes }: { recipes: Recipe[] }) {
             <li key={c.label}>
               <Link to={c.to} className="bubble" style={hueStyle(c.hue)}>
                 <span className="bubble__img">
-                  {withPhoto?.heroImage ? (
-                    <img src={withPhoto.heroImage.thumb ?? withPhoto.heroImage.src} alt="" loading="lazy" referrerPolicy="no-referrer" />
-                  ) : (
-                    <WallaHeadMark size={52} />
-                  )}
+                  {withPhoto?.heroImage ? <BubblePhoto src={withPhoto.heroImage.thumb ?? withPhoto.heroImage.src} /> : <WallaHeadMark size={52} />}
                 </span>
                 <span>{c.label}</span>
               </Link>
@@ -92,6 +88,12 @@ export function CategoryBubbles({ recipes }: { recipes: Recipe[] }) {
       </ul>
     </nav>
   );
+}
+
+function BubblePhoto({ src }: { src: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <WallaHeadMark size={52} />;
+  return <img src={src} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setFailed(true)} />;
 }
 
 function dayIndex(): number {

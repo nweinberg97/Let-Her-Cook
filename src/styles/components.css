@@ -1255,3 +1255,28 @@ input[type='radio'] {
   display: block;
   flex: none;
 }
+
+/* In grid cards the title is printed right below, so the placeholder shows just Walla. */
+.recipe-card .index-card__title {
+  display: none;
+}
+.recipe-card .index-card__walla {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  width: 46%;
+  max-width: 140px;
+  transform: translate(-50%, -50%) rotate(-6deg);
+}
+@media (max-width: 560px) {
+  .recipe-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-3);
+  }
+  .recipe-card__title {
+    font-size: 1rem;
+  }
+  .shelf__track {
+    grid-auto-columns: minmax(150px, 46%);
+  }
+}

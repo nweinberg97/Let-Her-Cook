@@ -1,5 +1,5 @@
 import type { Ingredient } from '../../types/recipe';
-import { parseLeadingQuantity, scaleIngredientText } from '../../lib/parsing/quantity';
+import { formatQuantity, parseLeadingQuantity, scaleIngredientText } from '../../lib/parsing/quantity';
 import { stripBullet } from '../../lib/parsing/ingredient';
 
 /** Splits "1½ cups flour" into the amount and the rest, so the amount can be set in bold. */
@@ -9,11 +9,13 @@ function splitAmount(text: string): [string, string] {
   if (!q) return ['', clean];
   const unit = q.rest.match(/^\s*((?:\([^)]*\)\s*)?[a-zA-Z]{1,12}\.?)(?=\s)/);
   const unitWords = /^(\s*\(.*\)\s*)?(cups?|tbsps?|tablespoons?|tsps?|teaspoons?|oz|ounces?|lbs?|pounds?|g|grams?|kg|ml|l|liters?|litres?|pinch(es)?|dash(es)?|cloves?|cans?|sticks?|slices?|bunch(es)?|handfuls?|sprigs?|pints?|quarts?|packages?|jars?|heads?|stalks?|pieces?)\.?$/i;
+  // Show "1 1/2" as "1½" — same value, easier to read at the stove.
+  const pretty = q.quantityMax != null ? `${formatQuantity(q.quantity)}–${formatQuantity(q.quantityMax)}` : formatQuantity(q.quantity);
   if (unit && unitWords.test(unit[1])) {
     const amount = q.matched + unit[0];
-    return [amount.trim(), clean.slice(amount.length).trim()];
+    return [`${pretty} ${unit[1].trim()}`, clean.slice(amount.length).trim()];
   }
-  return [q.matched.trim(), q.rest.trim()];
+  return [pretty, q.rest.trim()];
 }
 
 export function IngredientList({
