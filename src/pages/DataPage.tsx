@@ -4,6 +4,7 @@ import { useLibrary } from '../lib/storage/LibraryContext';
 import { storageErrorMessage, type DuplicateStrategy } from '../lib/storage/repository';
 import { BackupError, MAX_BACKUP_BYTES, backupFileName, countDuplicates, parseBackupText, type ParsedBackup } from '../lib/storage/backup';
 import { downloadFile } from '../lib/export/download';
+import { readBlobText } from '../lib/files/validate';
 import { Button } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
@@ -64,7 +65,7 @@ export function DataPage() {
       return;
     }
     try {
-      const parsed = parseBackupText(await file.text());
+      const parsed = parseBackupText(await readBlobText(file));
       setStrategy('skip');
       setPreview(parsed);
     } catch (err) {

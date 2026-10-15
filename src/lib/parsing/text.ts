@@ -639,9 +639,12 @@ export function splitRecipes(input: string): string[] {
     while (j > prev && back < 6) {
       const l = lines[j].trim();
       if (!l) {
+        // A blank line above the title block ends it.
+        if (back > 0) break;
         j--;
         continue;
       }
+      if (classifyHeader(l)) break;
       const meta: Meta = { servings: null, yieldText: null, prep: null, cook: null, total: null, cuisine: null, course: null, author: null, sourceUrl: null, title: null };
       if (parseMetaLine(l, meta) || (l.length < 100 && !looksLikeStep(l) && !looksLikeIngredient(l))) {
         j--;

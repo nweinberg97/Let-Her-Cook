@@ -43,8 +43,30 @@ function formatSize(bytes: number): string {
   return bytes >= 1024 * 1024 ? `${Math.round(bytes / 1024 / 1024)} MB` : `${Math.round(bytes / 1024)} KB`;
 }
 
+/** Blob → ArrayBuffer, with a FileReader fallback for older browsers. */
+export function readBlobBuffer(blob: Blob): Promise<ArrayBuffer> {
+  if (typeof blob.arrayBuffer === 'function') return blob.arrayBuffer();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as ArrayBuffer);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsArrayBuffer(blob);
+  });
+}
+
+/** Blob → UTF-8 text, with a FileReader fallback. */
+export function readBlobText(blob: Blob): Promise<string> {
+  if (typeof blob.text === 'function') return blob.text();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ''));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(blob);
+  });
+}
+
 async function sniff(file: File): Promise<Uint8Array> {
-  return new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  return new Uint8Array(await readBlobBuffer(file.slice(0, 16)));
 }
 
 function startsWith(bytes: Uint8Array, sig: number[], offset = 0): boolean {

@@ -1,5 +1,5 @@
 import type { ProgressCallback } from '../extraction/types';
-import { FileImportError, MAX_PDF_OCR_PAGES, MAX_PDF_TEXT_PAGES } from './validate';
+import { FileImportError, MAX_PDF_OCR_PAGES, MAX_PDF_TEXT_PAGES, readBlobBuffer, readBlobText } from './validate';
 
 /**
  * Reads text out of PDFs and Word documents, entirely in the browser.
@@ -21,7 +21,7 @@ export async function readPdf(file: File, onProgress?: ProgressCallback, signal?
   const workerUrl = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url')).default;
   pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
-  const data = new Uint8Array(await file.arrayBuffer());
+  const data = new Uint8Array(await readBlobBuffer(file));
   let doc: Awaited<ReturnType<typeof pdfjs.getDocument>['promise']>;
   try {
     doc = await pdfjs.getDocument({
@@ -106,7 +106,7 @@ export async function readDocx(file: File, onProgress?: ProgressCallback): Promi
   const mammoth = await import('mammoth/mammoth.browser');
   try {
     // Raw text only: no HTML is generated or rendered from the document.
-    const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+    const result = await mammoth.extractRawText({ arrayBuffer: await readBlobBuffer(file) });
     return result.value.replace(/\n{3,}/g, '\n\n').trim();
   } catch {
     throw new FileImportError('We couldn’t read this Word document. It may be damaged. Your existing recipes are safe — try saving it again as .docx or PDF, or paste the text instead.');
@@ -114,7 +114,7 @@ export async function readDocx(file: File, onProgress?: ProgressCallback): Promi
 }
 
 export async function readTextFile(file: File): Promise<string> {
-  const text = await file.text();
+  const text = await readBlobText(file);
   // Markdown: drop image syntax and link targets but keep the words.
   return text
     .replace(/!\[[^\]]*]\([^)]*\)/g, '')

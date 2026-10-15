@@ -159,7 +159,8 @@ const UNIT_PLURALS: [string, string][] = [
 /** "1 cup" → "2 cups" and back. Only touches the first word(s) when it's a known unit. */
 function adjustUnitPlural(rest: string, wasPlural: boolean, isPlural: boolean): string {
   if (wasPlural === isPlural) return rest;
-  const m = rest.match(/^(\s*)(.*)$/s);
+  // Skip a size in parentheses: "1 (14 oz) can" → look at "can".
+  const m = rest.match(/^(\s*(?:\([^)]*\)\s*)?)(.*)$/s);
   if (!m) return rest;
   const [, space, body] = m;
   for (const [one, many] of UNIT_PLURALS) {
