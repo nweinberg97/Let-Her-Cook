@@ -1908,3 +1908,20 @@
 .storage-error h1 {
   font-size: var(--step-4);
 }
+
+.bubble {
+  text-decoration: none;
+}
+@media (max-width: 860px) {
+  .first-run__art .walla {
+    width: 120px;
+    height: auto;
+  }
+  .first-run__art .walla-says__bubble {
+    font-size: var(--step--1);
+  }
+  .first-run {
+    padding-top: 0;
+    gap: var(--space-6);
+  }
+}
