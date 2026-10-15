@@ -1,7 +1,7 @@
 name: Build and publish to GitHub Pages
 
 # Builds the app and saves the finished website to the `gh-pages` branch.
-# In Settings → Pages choose: Deploy from a branch → gh-pages → / (root).
+# In Settings → Pages choose: Deploy from a branch → gh-pages → / (root) or /docs.
 
 on:
   push:
@@ -39,6 +39,10 @@ jobs:
         run: |
           cd dist
           touch .nojekyll
+          # Publish the same site under docs/ too, so it works whether Pages
+          # is set to "/ (root)" or "/docs".
+          mkdir docs
+          find . -mindepth 1 -maxdepth 1 ! -name docs -exec cp -r {} docs/ \;
           git init -q -b gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
