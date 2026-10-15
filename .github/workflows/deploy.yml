@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 20
       - run: npm install --no-audit --no-fund
-      - run: npm test
+      - run: npx vitest run --reporter=default --reporter=github-actions
 
   build:
     runs-on: ubuntu-latest
