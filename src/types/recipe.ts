@@ -104,6 +104,8 @@ export const recipeSchema = z.object({
   sourceName: shortText(300).nullable(),
   author: shortText(300).nullable(),
   isFavorite: z.boolean(),
+  /** True for the demo recipes Walla adds; they can be removed in one go. */
+  isSample: z.boolean().optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime()
 });

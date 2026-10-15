@@ -1,7 +1,7 @@
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
 import { BookOpen, FolderHeart, Heart, Clock3, Plus, ShieldCheck } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { Wordmark } from '../ui/Wordmark';
+import { Walla, Wordmark } from '../ui/Wordmark';
 import { useLibrary } from '../../lib/storage/LibraryContext';
 
 const NAV = [
@@ -38,7 +38,6 @@ export function AppShell() {
         <Link to="/" className="sidebar__brand" aria-label="Let Her Cook — my recipes">
           <Wordmark />
         </Link>
-        <p className="sidebar__tagline">Every recipe has a home.</p>
 
         <Link to="/add" className="btn btn--primary btn--md btn--block sidebar__add">
           <span className="btn__icon" aria-hidden="true">
@@ -83,6 +82,11 @@ export function AppShell() {
             </ul>
           </nav>
         )}
+
+        <div className="sidebar__walla">
+          <Walla size={64} />
+          <p>Tip: paste a recipe from anywhere and I’ll tidy it up!</p>
+        </div>
 
         <div className="sidebar__footer">
           <NavLink to="/data" className="sidebar__link">

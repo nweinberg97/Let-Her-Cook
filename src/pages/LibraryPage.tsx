@@ -1,6 +1,6 @@
 import { useMemo, useState, useId, type ReactNode } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { Search, SlidersHorizontal, X, Link2, ImageIcon, FileText, PenLine, Heart, FolderOpen } from 'lucide-react';
+import { Search, SlidersHorizontal, X, Heart } from 'lucide-react';
 import { useLibrary } from '../lib/storage/LibraryContext';
 import { applyFilters, hasActiveFilters, sortRecipes, SORT_LABELS, type RecipeFilters, type SortKey } from '../lib/search';
 import { DIETARY_TAGS } from '../types/recipe';
@@ -9,6 +9,9 @@ import { Button, ButtonLink } from '../components/ui/Button';
 import { usePageTitle } from '../lib/usePageTitle';
 import { NotFound } from './NotFound';
 import { courseStyle } from '../lib/courseColors';
+import { CategoryBubbles, DemoBanner, FeatureRow, FirstRun, HomeHello, Shelf } from '../components/home/Discover';
+import { WallaSays } from '../components/ui/Wordmark';
+import { effectiveTotalMinutes } from '../types/recipe';
 
 type View = 'all' | 'favorites' | 'recent' | 'collection';
 
@@ -116,8 +119,14 @@ export function LibraryPage({ view }: { view: View }) {
     ...(filters.collection ? [{ label: collections.find((c) => c.id === filters.collection)?.name ?? 'Collection', remove: () => update((p) => p.delete('collection')) }] : [])
   ];
 
+  const sampleCount = recipes.filter((r) => r.isSample).length;
+  const discover = view === 'all' && !active;
+
   return (
     <div className="page library">
+      {discover ? (
+        <HomeHello />
+      ) : (
       <header className="page-header">
         <div>
           <h1 className="page-title">{title}</h1>
@@ -130,6 +139,9 @@ export function LibraryPage({ view }: { view: View }) {
           </Link>
         )}
       </header>
+      )}
+
+      {view === 'all' && <DemoBanner count={sampleCount} />}
 
       {base.length > 0 && (
         <section className="finder" aria-label="Search and filter">
@@ -280,6 +292,20 @@ export function LibraryPage({ view }: { view: View }) {
         </section>
       )}
 
+      {discover && (
+        <>
+          <CategoryBubbles recipes={recipes} />
+          <FeatureRow recipes={recipes} />
+          <Shelf
+            title="Quick weeknight wins"
+            recipes={sortRecipes(recipes.filter((r) => (effectiveTotalMinutes(r) ?? Infinity) <= 30), 'quickest').slice(0, 12)}
+            more={{ to: '/?time=30', label: 'See all' }}
+          />
+          <Shelf title="Your favorites" recipes={recipes.filter((r) => r.isFavorite).slice(0, 12)} more={{ to: '/favorites', label: 'See all' }} />
+          <h2 className="all-recipes all-recipes__title">All recipes</h2>
+        </>
+      )}
+
       <p className="results-count" role="status" aria-live="polite">
         {base.length === 0 ? '' : active ? `${results.length} of ${base.length} recipes` : `${base.length} ${base.length === 1 ? 'recipe' : 'recipes'}`}
       </p>
@@ -288,6 +314,7 @@ export function LibraryPage({ view }: { view: View }) {
         <ViewEmpty view={view} />
       ) : results.length === 0 ? (
         <div className="empty empty--inline">
+          <WallaSays size={110}>Hmm, I looked everywhere!</WallaSays>
           <h2 className="empty__title">{filters.q ? `Nothing matches “${filters.q}”` : 'No recipes match these filters'}</h2>
           <p className="empty__text">Try fewer filters or a different word — search looks through titles, ingredients, steps, tags and notes.</p>
           <div className="empty__actions">
@@ -325,10 +352,10 @@ function ViewEmpty({ view }: { view: View }) {
   if (view === 'favorites') {
     return (
       <div className="empty empty--inline">
-        <Heart size={28} aria-hidden="true" className="empty__icon" />
+        <WallaSays size={110}>Tap the heart on a recipe you love!</WallaSays>
         <h2 className="empty__title">No favorites yet</h2>
-        <p className="empty__text">Tap the heart on any recipe and it will wait for you here.</p>
-        <ButtonLink to="/" variant="secondary">
+        <p className="empty__text">Hearted recipes wait for you here, so the family classics are always one tap away.</p>
+        <ButtonLink to="/" variant="primary">
           Browse my recipes
         </ButtonLink>
       </div>
@@ -336,64 +363,12 @@ function ViewEmpty({ view }: { view: View }) {
   }
   return (
     <div className="empty empty--inline">
-      <FolderOpen size={28} aria-hidden="true" className="empty__icon" />
-      <h2 className="empty__title">This collection is empty</h2>
+      <WallaSays size={110}>This shelf is empty — let’s fill it!</WallaSays>
+      <h2 className="empty__title">Nothing in this collection yet</h2>
       <p className="empty__text">Open any recipe and choose “Collections” to add it here.</p>
-      <ButtonLink to="/" variant="secondary">
+      <ButtonLink to="/" variant="primary">
         Browse my recipes
       </ButtonLink>
-    </div>
-  );
-}
-
-function FirstRun() {
-  return (
-    <div className="page first-run">
-      <div className="first-run__intro">
-        <h1 className="first-run__title">Your recipes, all in one place.</h1>
-        <p className="first-run__lede">Paste a link, drop in a screenshot, or add a recipe you love. We’ll help you make it yours.</p>
-        <div className="first-run__actions">
-          <ButtonLink to="/add" variant="primary" size="lg">
-            Add your first recipe
-          </ButtonLink>
-          <ButtonLink to="/add?tab=file" variant="secondary" size="lg">
-            Import a file
-          </ButtonLink>
-        </div>
-      </div>
-      <ul className="first-run__ways" aria-label="What you can bring">
-        <li>
-          <Link2 size={22} aria-hidden="true" />
-          <div>
-            <h2>A link</h2>
-            <p>From a recipe site you found last night.</p>
-          </div>
-        </li>
-        <li>
-          <ImageIcon size={22} aria-hidden="true" />
-          <div>
-            <h2>A screenshot or photo</h2>
-            <p>An Instagram post, a cookbook page, Mom’s handwritten card.</p>
-          </div>
-        </li>
-        <li>
-          <FileText size={22} aria-hidden="true" />
-          <div>
-            <h2>A PDF or document</h2>
-            <p>That family recipe file someone emailed around.</p>
-          </div>
-        </li>
-        <li>
-          <PenLine size={22} aria-hidden="true" />
-          <div>
-            <h2>Text from anywhere</h2>
-            <p>A text from your sister, a note on your phone, or straight from memory.</p>
-          </div>
-        </li>
-      </ul>
-      <p className="first-run__footnote">
-        Everything stays in this browser — no account needed. Moving from another device? <Link to="/data">Restore a backup</Link>.
-      </p>
     </div>
   );
 }

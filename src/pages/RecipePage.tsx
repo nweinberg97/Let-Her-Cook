@@ -186,7 +186,11 @@ export function RecipePage() {
         {recipe.heroImage && (
           <figure className="recipe__figure">
             <RecipeImage image={recipe.heroImage} title={recipe.title} variant="hero" course={recipe.course} />
-            {recipe.heroImage.origin === 'remote' && recipe.heroImage.credit && <figcaption>Photo: {recipe.heroImage.credit}</figcaption>}
+            {recipe.heroImage.origin === 'remote' && recipe.heroImage.credit && (
+              <figcaption>
+                {recipe.isSample ? 'Sample photo' : 'Photo'}: {recipe.heroImage.credit}
+              </figcaption>
+            )}
           </figure>
         )}
       </header>
@@ -199,14 +203,16 @@ export function RecipePage() {
             </h2>
             {recipe.ingredients.length > 0 && (
               <div className="no-print">
-                <ServingScaler original={scale.original} value={scale.value} onChange={scale.setValue} />
+                <ServingScaler original={scale.original} value={scale.value} onChange={scale.setValue} label={recipe.yieldText ? 'Makes' : 'Serves'} />
               </div>
             )}
           </div>
           {scale.factor !== 1 && (
             <p className="scale-note">
               {scale.original
-                ? `Amounts adjusted for ${formatQuantity(scale.value)} servings (recipe serves ${formatQuantity(scale.original)}).`
+                ? recipe.yieldText
+                  ? `Amounts adjusted to make ${formatQuantity(scale.value)} (recipe makes ${formatQuantity(scale.original)}).`
+                  : `Amounts adjusted for ${formatQuantity(scale.value)} servings (recipe serves ${formatQuantity(scale.original)}).`
                 : `Amounts multiplied by ${formatQuantity(scale.value)}.`}{' '}
               Times and temperatures stay the same; amounts we couldn’t read are unchanged.
             </p>

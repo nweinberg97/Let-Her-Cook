@@ -28,6 +28,7 @@ export function RecipeCard({ recipe, query = '' }: { recipe: Recipe; query?: str
       <Link to={`/recipes/${recipe.id}`} className="recipe-card__link">
         <div className="recipe-card__media">
           <RecipeImage image={recipe.heroImage} title={recipe.title} course={recipe.course} />
+          {recipe.isSample && <span className="recipe-card__badge">Sample</span>}
         </div>
         <div className="recipe-card__body">
           <h3 className="recipe-card__title">

@@ -9,8 +9,10 @@ import { formatQuantity } from '../../lib/parsing/quantity';
 export function ServingScaler({
   original,
   value,
-  onChange
+  onChange,
+  label = 'Serves'
 }: {
+  label?: string;
   original: number | null;
   /** Either a servings count (when original is known) or a multiplier. */
   value: number;
@@ -20,15 +22,15 @@ export function ServingScaler({
     const step = original < 2 ? 0.5 : 1;
     const changed = value !== original;
     return (
-      <div className="scaler" role="group" aria-label="Servings">
-        <span className="scaler__label">Serves</span>
-        <button type="button" className="scaler__btn" aria-label="Fewer servings" disabled={value <= step} onClick={() => onChange(Math.max(step, value - step))}>
+      <div className="scaler" role="group" aria-label={label === 'Serves' ? 'Servings' : 'Amount'}>
+        <span className="scaler__label">{label}</span>
+        <button type="button" className="scaler__btn" aria-label={label === 'Serves' ? 'Fewer servings' : 'Make fewer'} disabled={value <= step} onClick={() => onChange(Math.max(step, value - step))}>
           <Minus size={16} aria-hidden="true" />
         </button>
         <output className="scaler__value" aria-live="polite">
           {formatQuantity(value)}
         </output>
-        <button type="button" className="scaler__btn" aria-label="More servings" disabled={value >= 200} onClick={() => onChange(value + step)}>
+        <button type="button" className="scaler__btn" aria-label={label === 'Serves' ? 'More servings' : 'Make more'} disabled={value >= 200} onClick={() => onChange(value + step)}>
           <Plus size={16} aria-hidden="true" />
         </button>
         {changed && (

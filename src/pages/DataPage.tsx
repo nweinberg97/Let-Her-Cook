@@ -103,7 +103,7 @@ export function DataPage() {
       </header>
 
       <div className="data-grid">
-        <section className="data-card data-card--marigold" aria-labelledby="backup-h">
+        <section className="data-card data-card--butter" aria-labelledby="backup-h">
           <Download size={24} aria-hidden="true" className="data-card__icon" />
           <h2 id="backup-h" className="data-card__title">
             Download a backup
@@ -121,7 +121,7 @@ export function DataPage() {
           </Button>
         </section>
 
-        <section className="data-card data-card--blueberry" aria-labelledby="restore-h">
+        <section className="data-card data-card--sky" aria-labelledby="restore-h">
           <Upload size={24} aria-hidden="true" className="data-card__icon" />
           <h2 id="restore-h" className="data-card__title">
             Restore from a backup
@@ -151,7 +151,7 @@ export function DataPage() {
           )}
         </section>
 
-        <section className="data-card data-card--herb" aria-labelledby="keep-h">
+        <section className="data-card data-card--mint" aria-labelledby="keep-h">
           <HardDrive size={24} aria-hidden="true" className="data-card__icon" />
           <h2 id="keep-h" className="data-card__title">
             Storage on this device

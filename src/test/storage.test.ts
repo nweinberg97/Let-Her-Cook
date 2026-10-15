@@ -206,3 +206,21 @@ describe('storage errors', () => {
     expect(await repo.getRecipe(r.id)).toBeDefined();
   });
 });
+
+describe('demo samples', () => {
+  it('adds every sample once, flags them, and removes only samples', async () => {
+    const { addSampleRecipes, removeSampleRecipes, SAMPLE_COUNT, buildSampleDrafts } = await import('../lib/demo');
+    for (const d of buildSampleDrafts()) {
+      expect(d.ingredients.length).toBeGreaterThan(4);
+      expect(d.instructions.length).toBeGreaterThan(2);
+      expect(d.heroImage?.src).toMatch(/^https:\/\/images\.unsplash\.com\//);
+    }
+    const mine = await repo.createRecipe(draft('My Own Soup'));
+    expect(await addSampleRecipes(repo)).toBe(SAMPLE_COUNT);
+    expect(await addSampleRecipes(repo)).toBe(0);
+    const all = await repo.listRecipes();
+    expect(all.filter((r) => r.isSample)).toHaveLength(SAMPLE_COUNT);
+    expect(await removeSampleRecipes(repo)).toBe(SAMPLE_COUNT);
+    expect((await repo.listRecipes()).map((r) => r.id)).toEqual([mine.id]);
+  });
+});

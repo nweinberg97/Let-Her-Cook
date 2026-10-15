@@ -1,10 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import '@fontsource-variable/newsreader';
-import '@fontsource-variable/newsreader/wght-italic.css';
-import '@fontsource/atkinson-hyperlegible-next/400.css';
-import '@fontsource/atkinson-hyperlegible-next/600.css';
-import '@fontsource/atkinson-hyperlegible-next/700.css';
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/plus-jakarta-sans';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';

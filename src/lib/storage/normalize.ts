@@ -86,6 +86,7 @@ export function finalizeRecipe(draft: RecipeDraft, existing?: Recipe): Recipe {
     sourceName: cleanStr(draft.sourceName),
     author: cleanStr(draft.author),
     isFavorite: Boolean(draft.isFavorite),
+    ...(draft.isSample ? { isSample: true } : {}),
     createdAt: existing?.createdAt ?? now,
     updatedAt: now
   };
@@ -154,6 +155,7 @@ export function repairRecipe(input: unknown): Recipe | null {
     sourceName: strOrNull(o.sourceName),
     author: strOrNull(o.author),
     isFavorite: o.isFavorite === true,
+    ...(o.isSample === true ? { isSample: true } : {}),
     createdAt: date(o.createdAt),
     updatedAt: date(o.updatedAt)
   };

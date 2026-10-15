@@ -8,11 +8,10 @@ import { Dialog } from '../components/ui/Dialog';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { useToast } from '../components/ui/Toast';
 import { usePageTitle } from '../lib/usePageTitle';
-import { hueStyle, type Hue } from '../lib/courseColors';
+import { hueStyle, HUES } from '../lib/courseColors';
 import { RecipeImage } from '../components/recipes/RecipeImage';
 import type { Collection } from '../types/recipe';
 
-const HUES: Hue[] = ['tomato', 'marigold', 'herb', 'blueberry', 'fig', 'grapefruit', 'olive'];
 
 export function CollectionsPage() {
   usePageTitle('Collections');

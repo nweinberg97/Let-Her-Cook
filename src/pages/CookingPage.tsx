@@ -99,7 +99,7 @@ export function CookingPage() {
         <section id="panel-ing" role="tabpanel" aria-labelledby="tab-ing" className={`cook__panel cook__ingredients ${tab === 'ingredients' ? 'is-active' : ''}`}>
           <div className="section-head">
             <h2 className="section-title">Ingredients</h2>
-            <ServingScaler original={scale.original} value={scale.value} onChange={scale.setValue} />
+            <ServingScaler original={scale.original} value={scale.value} onChange={scale.setValue} label={recipe.yieldText ? 'Makes' : 'Serves'} />
           </div>
           {recipe.ingredients.length ? (
             <IngredientList ingredients={recipe.ingredients} factor={scale.factor} checked={checkedIngredients} onToggle={toggleIngredient} />

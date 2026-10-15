@@ -236,7 +236,7 @@ function assembleIngredients(lines: string[]): { ingredients: Ingredient[]; left
       pendingJoin = false;
       continue;
     }
-    if (isGroupHeading(line) && !looksLikeIngredient(line.replace(/:$/, ''))) {
+    if (isGroupHeading(line) && (/:$/.test(line) || !looksLikeIngredient(line))) {
       group = cleanHeading(line);
       pendingJoin = false;
       continue;
@@ -255,7 +255,7 @@ function assembleIngredients(lines: string[]): { ingredients: Ingredient[]; left
       continue;
     }
     // Inline comma lists from social captions: "flour, sugar, 2 eggs, butter"
-    if (!parseLeadingQuantity(stripBullet(line)) && line.split(',').length >= 4 && line.length < 300 && !/[.!?]$/.test(line)) {
+    if (!parseLeadingQuantity(stripBullet(line)) && line.split(',').length >= 4 && line.length < 300 && !/[.!?:()]/.test(line)) {
       for (const part of line.split(',')) if (part.trim()) out.push(parseIngredientLine(part.trim(), group));
       pendingJoin = false;
       continue;
