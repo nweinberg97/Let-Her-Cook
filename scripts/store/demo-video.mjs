@@ -33,7 +33,8 @@ const context = await browser.newContext({
   hasTouch: true,
   serviceWorkers: 'block',
   locale: 'en-US',
-  recordVideo: { dir: OUT, size: { width: W * 2, height: H * 2 } }
+  // Video size must match the viewport, or the app only fills one corner.
+  recordVideo: { dir: OUT, size: { width: W, height: H } }
 });
 
 // Show taps as a soft circle so viewers can follow along.
