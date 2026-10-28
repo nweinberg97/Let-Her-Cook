@@ -1,0 +1,56 @@
+name: Demo video
+
+# Records a phone-sized walkthrough of the app and publishes demo.mp4 and
+# demo.gif to the `demo-video` branch.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/store/demo-video.mjs'
+      - '.github/workflows/demo-video.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: demo-video
+  cancel-in-progress: true
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - name: Install Playwright and ffmpeg
+        run: |
+          npm install --no-save --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Record
+        run: node scripts/store/demo-video.mjs 2>&1 | tee out-record.log
+      - name: Convert to MP4 and GIF
+        run: |
+          cd out/demo
+          ffmpeg -loglevel error -y -i demo.webm -vf "fps=30,scale=860:-2" -c:v libx264 -pix_fmt yuv420p -crf 22 -preset slow -movflags +faststart demo.mp4
+          ffmpeg -loglevel error -y -i demo.webm -vf "fps=12,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" -loop 0 demo.gif
+          ffmpeg -loglevel error -y -ss 3 -i demo.webm -frames:v 1 poster.png
+          ls -la
+      - name: Publish to the demo-video branch
+        if: always()
+        run: |
+          mkdir -p out/demo && cp out-record.log out/demo/record.log 2>/dev/null || true
+          rm -f out/demo/demo.webm
+          echo "${{ job.status }} ${{ github.sha }}" > out/demo/STATUS.txt
+          cd out/demo
+          git init -q -b demo-video
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Demo video for ${{ github.sha }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" demo-video

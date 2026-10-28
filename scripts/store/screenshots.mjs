@@ -46,6 +46,23 @@ const DEVICES = [
   { id: 'ipad-13', width: 1032, height: 1376, scale: 2, mobile: false }
 ];
 
+// A realistic status bar (9:41, Dynamic Island on iPhone) above the app, like a
+// real device screenshot. It also keeps the app's logo clear of the frame's
+// rounded corners.
+function statusBar(isPad) {
+  const h = isPad ? 32 : 54;
+  const icons = `<svg width="${isPad ? 64 : 72}" height="14" viewBox="0 0 72 14" fill="#1E1B18"><rect x="0" y="9" width="3.2" height="5" rx="1"/><rect x="5" y="6.5" width="3.2" height="7.5" rx="1"/><rect x="10" y="4" width="3.2" height="10" rx="1"/><rect x="15" y="1.5" width="3.2" height="12.5" rx="1"/><path d="M31 3.2a11 11 0 0 1 14.6 0l-1.5 1.6a8.8 8.8 0 0 0-11.6 0zM33.7 6.2a7 7 0 0 1 9.2 0l-1.5 1.6a4.8 4.8 0 0 0-6.2 0zM36.4 9.2a3 3 0 0 1 3.8 0l-1.9 2.1z"/><rect x="50" y="1" width="19" height="12" rx="3.5" fill="none" stroke="#1E1B18" stroke-opacity=".45" stroke-width="1.2"/><rect x="51.8" y="2.8" width="15.4" height="8.4" rx="2"/><rect x="70" y="4.6" width="1.6" height="4.8" rx=".8" fill-opacity=".45"/></svg>`;
+  return `(() => {
+    const st = document.createElement('style');
+    st.textContent = 'body{padding-top:${h}px!important}.lhc-sb{position:fixed;top:0;left:0;right:0;height:${h}px;z-index:9999;display:flex;align-items:center;justify-content:space-between;padding:0 ${isPad ? 22 : 34}px;font:600 ${isPad ? 15 : 17}px -apple-system,system-ui,sans-serif;color:#1E1B18;pointer-events:none}.lhc-di{position:absolute;left:50%;top:11px;width:124px;height:36px;margin-left:-62px;border-radius:20px;background:#000}';
+    document.head.appendChild(st);
+    const sb = document.createElement('div');
+    sb.className = 'lhc-sb';
+    sb.innerHTML = '<span>${isPad ? '9:41 &nbsp;Wed Oct 14' : '9:41'}</span>${isPad ? '' : '<span class="lhc-di"></span>'}' + ${JSON.stringify(icons)};
+    document.body.appendChild(sb);
+  })()`;
+}
+
 // Hide demo-only chrome so the shots show the app as people will use it.
 const HIDE_DEMO = `.demo-banner,.exit-demo,.sidebar__demo,.recipe-card__badge,.recipe__figure figcaption,.toasts{display:none!important}`;
 
@@ -86,6 +103,7 @@ for (const device of DEVICES) {
       await page.waitForTimeout(6800);
     }
     await page.evaluate(() => window.scrollTo(0, 0));
+    await page.evaluate(statusBar(device.id.startsWith('ipad')));
     // Let photos finish loading.
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))));
