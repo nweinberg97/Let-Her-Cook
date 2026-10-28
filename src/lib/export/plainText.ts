@@ -39,6 +39,6 @@ export function recipeToPlainText(r: Recipe, servings?: number | null): string {
   if (r.notes) lines.push('', 'NOTES', r.notes);
   const source = [r.author, r.sourceName, r.sourceUrl].filter(Boolean).join(' — ');
   if (source) lines.push('', `Source: ${source}`);
-  lines.push('', 'Saved with Let Her Cook');
+  lines.push('', 'Saved with Let ’Em Cook');
   return lines.join('\n');
 }

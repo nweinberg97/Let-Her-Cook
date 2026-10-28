@@ -1,8 +1,8 @@
-# Let Her Cook
+# Let ’Em Cook
 
 **Every recipe has a home.**
 
-Let Her Cook is a personal recipe library that turns recipes from anywhere — a link, a screenshot, a photo of Grandma's card, a PDF, a text from your sister — into one beautiful, searchable cookbook. It runs entirely in your browser: no account, no server, no API keys.
+Let ’Em Cook is a personal recipe library that turns recipes from anywhere — a link, a screenshot, a photo of Grandma's card, a PDF, a text from your sister — into one beautiful, searchable cookbook. It runs entirely in your browser: no account, no server, no API keys.
 
 ## Get started
 
@@ -38,7 +38,7 @@ Other commands:
 Recipes live in this browser only, so download a backup now and then:
 
 1. Open **Backup & privacy** (bottom of the sidebar, or the shield icon on mobile).
-2. Press **Download backup**. You get a `let-her-cook-backup-YYYY-MM-DD.json` file with every recipe, kept photo, collection, tag and setting.
+2. Press **Download backup**. You get a `let-em-cook-backup-YYYY-MM-DD.json` file with every recipe, kept photo, collection, tag and setting.
 3. To restore — on this device or another browser — press **Choose backup file** on the same page. You'll see what's inside and choose how to handle recipes you already have before anything changes.
 
 On the same page, **Ask the browser to keep my recipes** requests persistent storage, which makes the browser much less likely to clear your data when space runs low.

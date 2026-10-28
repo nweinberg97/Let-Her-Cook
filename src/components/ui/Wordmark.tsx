@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 /**
- * Walla the Koala — Let Her Cook's mascot and logo. A chef-hatted koala in an
+ * Walla the Koala — Let ’Em Cook's mascot and logo. A chef-hatted koala in an
  * orange apron. Drawn as inline SVG so she's crisp at any size and needs no
  * downloads. `LogoMark` is the app-icon tile (same art as public/favicon.svg).
  */
@@ -115,7 +115,7 @@ export function Wordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   return (
     <span className={`wordmark wordmark--${size}`}>
       <LogoMark size={size === 'lg' ? 48 : size === 'sm' ? 30 : 36} />
-      <span className="wordmark__text">let her cook</span>
+      <span className="wordmark__text">let ’em cook</span>
     </span>
   );
 }

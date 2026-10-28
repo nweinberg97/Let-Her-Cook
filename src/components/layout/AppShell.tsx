@@ -37,7 +37,7 @@ export function AppShell() {
       </a>
 
       <aside className="sidebar" aria-label="Main navigation">
-        <Link to="/" className="sidebar__brand" aria-label="Let Her Cook — my recipes">
+        <Link to="/" className="sidebar__brand" aria-label="Let ’Em Cook — my recipes">
           <Wordmark />
         </Link>
 
@@ -105,7 +105,7 @@ export function AppShell() {
       </aside>
 
       <header className="mobile-header">
-        <Link to="/" aria-label="Let Her Cook — my recipes">
+        <Link to="/" aria-label="Let ’Em Cook — my recipes">
           <Wordmark size="sm" />
         </Link>
         <div className="mobile-header__actions">

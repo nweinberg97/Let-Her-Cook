@@ -34,14 +34,14 @@ export function parseBackupText(text: string): ParsedBackup {
   try {
     json = JSON.parse(text);
   } catch {
-    throw new BackupError('This file isn’t valid JSON, so it can’t be a Let Her Cook backup. Your existing recipes are untouched.');
+    throw new BackupError('This file isn’t valid JSON, so it can’t be a Let ’Em Cook backup. Your existing recipes are untouched.');
   }
   const shape = backupSchema.safeParse(json);
   if (!shape.success) {
-    throw new BackupError('This file isn’t a Let Her Cook backup. Choose a file you downloaded from “Download backup”. Your existing recipes are untouched.');
+    throw new BackupError('This file isn’t a Let ’Em Cook backup. Choose a file you downloaded from “Download backup”. Your existing recipes are untouched.');
   }
   if (shape.data.schemaVersion > SCHEMA_VERSION) {
-    throw new BackupError('This backup was made by a newer version of Let Her Cook. Update the app, then try again. Your existing recipes are untouched.');
+    throw new BackupError('This backup was made by a newer version of Let ’Em Cook. Update the app, then try again. Your existing recipes are untouched.');
   }
   const data = migrate(shape.data as unknown as Record<string, unknown>) as typeof shape.data;
 
@@ -84,7 +84,7 @@ export function makeBackup(recipes: Recipe[], collections: Collection[], prefere
 
 export function backupFileName(date = new Date()): string {
   const d = date.toISOString().slice(0, 10);
-  return `let-her-cook-backup-${d}.json`;
+  return `let-em-cook-backup-${d}.json`;
 }
 
 /** How many recipes in the backup already exist here (same id). */

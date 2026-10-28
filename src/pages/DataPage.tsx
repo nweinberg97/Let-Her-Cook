@@ -57,11 +57,11 @@ export function DataPage() {
   const readBackup = async (file: File) => {
     setRestoreError(null);
     if (!/\.json$/i.test(file.name) && file.type !== 'application/json') {
-      setRestoreError('Choose a .json backup file you downloaded from Let Her Cook.');
+      setRestoreError('Choose a .json backup file you downloaded from Let ’Em Cook.');
       return;
     }
     if (file.size > MAX_BACKUP_BYTES) {
-      setRestoreError('That file is too large to be a Let Her Cook backup.');
+      setRestoreError('That file is too large to be a Let ’Em Cook backup.');
       return;
     }
     try {
@@ -219,7 +219,7 @@ export function DataPage() {
         </dl>
         <p className="privacy__future">
           <Server size={16} aria-hidden="true" />
-          <span>Backups use a documented, versioned format, so they can be imported into a future synced version of Let Her Cook without losing anything.</span>
+          <span>Backups use a documented, versioned format, so they can be imported into a future synced version of Let ’Em Cook without losing anything.</span>
         </p>
       </section>
 

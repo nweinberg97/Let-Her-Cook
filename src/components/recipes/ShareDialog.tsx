@@ -39,7 +39,7 @@ export function ShareDialog({ recipe, servings, open, onClose }: { recipe: Recip
       title="Share this recipe"
       description={
         <p>
-          Your recipes live only in this browser, so there’s no link to send. Share it as text instead — whoever receives it can paste it into their own Let Her Cook.
+          Your recipes live only in this browser, so there’s no link to send. Share it as text instead — whoever receives it can paste it into their own Let ’Em Cook.
         </p>
       }
       footer={

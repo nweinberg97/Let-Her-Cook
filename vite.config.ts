@@ -44,8 +44,8 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['favicon.svg', 'icons/*.png'],
       manifest: {
-        name: 'Let Her Cook',
-        short_name: 'Let Her Cook',
+        name: 'Let ’Em Cook',
+        short_name: 'Let ’Em Cook',
         description: 'Every recipe has a home. A private recipe library that lives in your browser.',
         theme_color: '#FFFAF3',
         background_color: '#FFFAF3',

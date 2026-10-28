@@ -2,7 +2,7 @@
   "name": "let-her-cook",
   "private": true,
   "version": "1.0.0",
-  "description": "Let Her Cook — a local-first personal recipe library. Every recipe has a home.",
+  "description": "Let ’Em Cook — a local-first personal recipe library. Every recipe has a home.",
   "type": "module",
   "scripts": {
     "dev": "node scripts/copy-ocr-assets.mjs && vite",

@@ -149,7 +149,7 @@ describe('Case L — backup round trip', () => {
 
   it('rejects files that are not backups and repairs damaged entries', () => {
     expect(() => parseBackupText('not json')).toThrow(/isn’t valid JSON/);
-    expect(() => parseBackupText('{"hello":1}')).toThrow(/isn’t a Let Her Cook backup/);
+    expect(() => parseBackupText('{"hello":1}')).toThrow(/isn’t a Let ’Em Cook backup/);
     expect(() => parseBackupText(JSON.stringify({ app: 'let-her-cook', schemaVersion: 99, exportedAt: '', recipes: [], collections: [] }))).toThrow(/newer version/);
     const parsed = parseBackupText(
       JSON.stringify({

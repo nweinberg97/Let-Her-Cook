@@ -21,7 +21,7 @@ function StorageGate() {
       <div className="storage-error" role="alert">
         <Wordmark size="lg" />
         <AlertTriangle size={32} aria-hidden="true" />
-        <h1>This browser isn’t letting Let Her Cook save recipes</h1>
+        <h1>This browser isn’t letting Let ’Em Cook save recipes</h1>
         <p>
           Private or incognito windows, strict privacy settings, or a full disk can block site storage. Try a regular browser window, allow site data for this page, or free up some
           space — then reload.
