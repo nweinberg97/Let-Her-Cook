@@ -85,6 +85,7 @@ for (const device of DEVICES) {
       await page.locator('.feed-option', { hasText: 'A handful' }).click();
       await page.waitForTimeout(6800);
     }
+    await page.evaluate(() => window.scrollTo(0, 0));
     // Let photos finish loading.
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))));
@@ -98,7 +99,7 @@ for (const device of DEVICES) {
   const frame = await context.newPage();
   for (const shot of SHOTS) {
     const isPad = device.id.startsWith('ipad');
-    const html = `<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="${cssHref}">
+    const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="${cssHref}">
 <style>
   html,body{margin:0;width:${device.width}px;height:${device.height}px;overflow:hidden;background:${shot.bg};}
   .f{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;padding:${isPad ? 64 : 46}px ${isPad ? 64 : 26}px 0;box-sizing:border-box;
