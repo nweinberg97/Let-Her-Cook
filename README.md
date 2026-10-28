@@ -43,6 +43,10 @@ Recipes live in this browser only, so download a backup now and then:
 
 On the same page, **Ask the browser to keep my recipes** requests persistent storage, which makes the browser much less likely to clear your data when space runs low.
 
+## iPhone & iPad app
+
+The same code ships as a native iOS app (Capacitor). See [docs/APP_STORE.md](docs/APP_STORE.md) for the App Store launch kit, what's done, and what's needed.
+
 ## What it does
 
 - **Capture:** links (via recipe-card data on the page), pasted text, photos and screenshots (on-device text recognition), PDFs (text and scanned), Word `.docx`, `.txt` and `.md` files, or typing it in.
