@@ -6,6 +6,7 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/pages.css';
+import './styles/walla-feed.css';
 import './styles/print.css';
 import { App } from './App';
 import { IndexedDbRepository } from './lib/storage/indexeddb';

@@ -10,6 +10,7 @@ import { AddRecipePage } from './pages/AddRecipePage';
 import { ReviewPage } from './pages/ReviewPage';
 import { DataPage } from './pages/DataPage';
 import { NotFound } from './pages/NotFound';
+import { FeedWallaPage } from './pages/FeedWallaPage';
 import { useLibrary } from './lib/storage/LibraryContext';
 import { Wordmark } from './components/ui/Wordmark';
 
@@ -53,6 +54,7 @@ const router = createHashRouter([
           { path: 'add', element: <AddRecipePage /> },
           { path: 'add/review', element: <ReviewPage /> },
           { path: 'data', element: <DataPage /> },
+          { path: 'walla', element: <FeedWallaPage /> },
           { path: '*', element: <NotFound /> }
         ]
       }

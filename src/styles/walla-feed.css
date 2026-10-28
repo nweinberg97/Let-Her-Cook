@@ -1,0 +1,448 @@
+/* ───────────────────────── Walla eats a eucalyptus leaf ───────────────────────── */
+.walla-feed {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+.walla-feed__bubble {
+  position: relative;
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--radius-l);
+  background: #fff;
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-1);
+  text-align: center;
+  min-height: 2.9rem;
+  animation: wf-pop 0.35s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+.walla-feed__bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  background: #fff;
+  transform: rotate(45deg);
+  border-radius: 3px;
+}
+@keyframes wf-pop {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+.walla-feed__svg {
+  overflow: visible;
+}
+.walla-feed__svg g,
+.walla-feed__svg ellipse,
+.walla-feed__svg path {
+  transform-box: view-box;
+}
+
+/* default visibility */
+.wf-eyes-sparkle,
+.wf-eyes-happy,
+.wf-mouth-open,
+.wf-mouth-chew,
+.wf-mouth-grin,
+.wf-crumb-stuck,
+.wf-hearts {
+  opacity: 0;
+}
+
+/* idle: a gentle sway */
+.walla-feed.is-idle .wf-body {
+  transform-origin: 100px 220px;
+  animation: wf-sway 3s ease-in-out infinite;
+}
+@keyframes wf-sway {
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+/* incoming: eyes go sparkly, mouth drops open in awe */
+.walla-feed.is-incoming .wf-eyes-normal {
+  opacity: 0;
+}
+.walla-feed.is-incoming .wf-eyes-sparkle {
+  opacity: 1;
+  transform-origin: 100px 94px;
+  animation: wf-twinkle 0.5s ease-in-out infinite alternate;
+}
+@keyframes wf-twinkle {
+  to {
+    transform: scale(1.06);
+  }
+}
+.walla-feed.is-incoming .wf-mouth-smile {
+  opacity: 0;
+}
+.walla-feed.is-incoming .wf-mouth-open {
+  opacity: 1;
+}
+.walla-feed.is-incoming .wf-head {
+  transform-origin: 100px 120px;
+  animation: wf-lean 1.3s ease-out forwards;
+}
+@keyframes wf-lean {
+  to {
+    transform: rotate(-6deg) translateY(-2px);
+  }
+}
+.wf-sprig-in {
+  animation: wf-drift 1.3s cubic-bezier(0.3, 0.8, 0.4, 1) both;
+}
+@keyframes wf-drift {
+  0% {
+    transform: translate(70px, -150px) rotate(-40deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  45% {
+    transform: translate(40px, -80px) rotate(18deg);
+  }
+  70% {
+    transform: translate(12px, -26px) rotate(-10deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+}
+
+/* eating: chomp chomp, puffy cheeks, head bob */
+.walla-feed.is-eating .wf-mouth-smile {
+  opacity: 0;
+}
+.walla-feed.is-eating .wf-mouth-open {
+  animation: wf-chomp-a 0.32s steps(1) infinite;
+}
+.walla-feed.is-eating .wf-mouth-chew {
+  animation: wf-chomp-b 0.32s steps(1) infinite;
+}
+@keyframes wf-chomp-a {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes wf-chomp-b {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.walla-feed.is-eating .wf-eyes-normal {
+  opacity: 0;
+}
+.walla-feed.is-eating .wf-eyes-happy {
+  opacity: 1;
+}
+.walla-feed.is-eating .wf-cheek-l {
+  transform-origin: 66px 112px;
+  animation: wf-puff 0.32s ease-in-out infinite alternate;
+}
+.walla-feed.is-eating .wf-cheek-r {
+  transform-origin: 134px 112px;
+  animation: wf-puff 0.32s ease-in-out infinite alternate;
+}
+@keyframes wf-puff {
+  to {
+    transform: scale(1.6, 1.4);
+    opacity: 1;
+  }
+}
+.walla-feed.is-eating .wf-head {
+  transform-origin: 100px 130px;
+  animation: wf-bob 0.32s ease-in-out infinite alternate;
+}
+@keyframes wf-bob {
+  from {
+    transform: rotate(-3deg) translateY(0);
+  }
+  to {
+    transform: rotate(3deg) translateY(2px);
+  }
+}
+.wf-sprig {
+  transition: transform 0.25s ease-out;
+}
+.wf-leaf {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.wf-leaf.is-eaten {
+  opacity: 0;
+}
+.wf-crumb {
+  animation: wf-crumb 0.6s ease-out forwards;
+}
+@keyframes wf-crumb {
+  to {
+    transform: translate(var(--dx), var(--dy)) rotate(90deg);
+    opacity: 0;
+  }
+}
+
+/* burp: eyes shut, a little hop */
+.walla-feed.is-burp .wf-eyes-normal,
+.walla-feed.is-burp .wf-mouth-smile {
+  opacity: 0;
+}
+.walla-feed.is-burp .wf-eyes-happy {
+  opacity: 1;
+}
+.walla-feed.is-burp .wf-mouth-open {
+  opacity: 1;
+  transform-origin: 100px 134px;
+  animation: wf-burp 0.5s ease-out;
+}
+@keyframes wf-burp {
+  30% {
+    transform: scale(1.35);
+  }
+}
+.walla-feed.is-burp .wf-body {
+  transform-origin: 100px 225px;
+  animation: wf-hop 0.5s ease-out;
+}
+@keyframes wf-hop {
+  30% {
+    transform: translateY(-8px) scale(1.02, 0.98);
+  }
+}
+.walla-feed.is-burp .wf-crumb-stuck {
+  opacity: 1;
+}
+
+/* happy: big grin, rosy cheeks, belly pat, hearts */
+.walla-feed.is-happy .wf-eyes-normal,
+.walla-feed.is-happy .wf-mouth-smile {
+  opacity: 0;
+}
+.walla-feed.is-happy .wf-eyes-happy,
+.walla-feed.is-happy .wf-mouth-grin,
+.walla-feed.is-happy .wf-crumb-stuck,
+.walla-feed.is-happy .wf-hearts {
+  opacity: 1;
+}
+.walla-feed.is-happy .wf-cheek {
+  opacity: 1;
+}
+.walla-feed.is-happy .wf-cheek-l {
+  transform-origin: 66px 112px;
+  transform: scale(1.3);
+}
+.walla-feed.is-happy .wf-cheek-r {
+  transform-origin: 134px 112px;
+  transform: scale(1.3);
+}
+.walla-feed.is-happy .wf-body {
+  transform-origin: 100px 225px;
+  animation: wf-bounce 0.9s ease-in-out infinite;
+}
+@keyframes wf-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.walla-feed.is-happy .wf-paw-l {
+  transform-origin: 70px 150px;
+  animation: wf-pat 0.45s ease-in-out infinite alternate;
+}
+@keyframes wf-pat {
+  to {
+    transform: translate(10px, 8px) rotate(-12deg);
+  }
+}
+.wf-heart {
+  transform-box: fill-box;
+}
+.walla-feed.is-happy .wf-heart {
+  animation: wf-float 2s ease-out infinite;
+}
+@keyframes wf-float {
+  0% {
+    opacity: 0;
+    translate: 0 10px;
+    scale: 0.6;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -40px;
+    scale: 1.2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .walla-feed * {
+    animation: none !important;
+  }
+  .walla-feed.is-happy .wf-hearts {
+    opacity: 1;
+  }
+}
+
+/* ───────────────────────── Feed Walla page ───────────────────────── */
+.feed-page {
+  max-width: 980px;
+}
+.feed-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-7);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 80% 85%, rgba(141, 185, 162, 0.45) 0 26%, transparent 27%),
+    radial-gradient(circle at 15% 10%, rgba(255, 214, 102, 0.5) 0 14%, transparent 15%),
+    var(--mint-wash);
+}
+.feed-hero__title {
+  font-size: clamp(2.6rem, 1.8rem + 3.6vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+.feed-hero__title em {
+  font-style: normal;
+  color: var(--mint-ink);
+}
+.feed-hero__lede {
+  margin-top: var(--space-4);
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  max-width: 34ch;
+}
+.feed-hero__stage {
+  display: flex;
+  justify-content: center;
+}
+.feed-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.feed-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: var(--space-4) var(--space-3);
+  border-radius: var(--radius-l);
+  border: 2px solid transparent;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.feed-option:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: var(--mint);
+}
+.feed-option:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.feed-option__leaves {
+  display: flex;
+  gap: 2px;
+  color: var(--mint-ink);
+  min-height: 24px;
+}
+.feed-option__label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-1);
+}
+.feed-option__price {
+  font-weight: 800;
+  color: var(--mint-ink);
+}
+.feed-note {
+  margin-top: var(--space-4);
+  color: var(--muted);
+  font-size: var(--step--1);
+  text-align: center;
+}
+.feed-promise {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-7) 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+.feed-promise li {
+  padding: var(--space-5);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.feed-promise h2 {
+  font-size: var(--step-2);
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+}
+.feed-promise p {
+  color: var(--ink-soft);
+}
+@media (max-width: 760px) {
+  .feed-hero {
+    grid-template-columns: 1fr;
+    padding: var(--space-5);
+    text-align: center;
+  }
+  .feed-hero__lede {
+    margin-inline: auto;
+  }
+  .feed-hero__stage {
+    order: -1;
+  }
+  .feed-options {
+    grid-template-columns: 1fr;
+  }
+  .feed-option {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* Sidebar + mobile entry points */
+.sidebar__walla {
+  text-decoration: none;
+  background: var(--mint-wash);
+  color: var(--mint-ink);
+  transition: transform 0.15s ease;
+}
+.sidebar__walla:hover {
+  transform: translateY(-2px);
+}
+.sidebar__walla strong {
+  display: block;
+  color: var(--ink);
+}
+.feed-icon { color: var(--mint-ink); }

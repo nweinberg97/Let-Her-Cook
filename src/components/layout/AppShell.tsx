@@ -1,5 +1,5 @@
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
-import { BookOpen, FolderHeart, Heart, Clock3, Plus, ShieldCheck } from 'lucide-react';
+import { BookOpen, FolderHeart, Heart, Clock3, Plus, ShieldCheck, Leaf } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Walla, Wordmark } from '../ui/Wordmark';
 import { ExitDemoButton } from '../home/Discover';
@@ -91,10 +91,12 @@ export function AppShell() {
           </nav>
         )}
 
-        <div className="sidebar__walla">
+        <Link to="/walla" className="sidebar__walla">
           <Walla size={64} />
-          <p>Tip: paste a recipe from anywhere and I’ll tidy it up!</p>
-        </div>
+          <p>
+            <strong>Free forever.</strong> Love it? Buy Walla a eucalyptus leaf.
+          </p>
+        </Link>
 
         <div className="sidebar__footer">
           <NavLink to="/data" className="sidebar__link">
@@ -110,6 +112,9 @@ export function AppShell() {
         </Link>
         <div className="mobile-header__actions">
           {sampleCount > 0 && <ExitDemoButton />}
+          <Link to="/walla" className="icon-btn icon-btn--ghost icon-btn--md feed-icon" aria-label="Feed Walla a eucalyptus leaf" title="Feed Walla">
+            <Leaf size={20} aria-hidden="true" />
+          </Link>
           <Link to="/data" className="icon-btn icon-btn--ghost icon-btn--md" aria-label="Backup and privacy" title="Backup & privacy">
             <ShieldCheck size={20} aria-hidden="true" />
           </Link>
