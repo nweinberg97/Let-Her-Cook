@@ -72,7 +72,11 @@ export function WallaFeed({ leaves = 1, play = 0, size = 260 }: { leaves?: numbe
   }, [play, leaves]);
 
   const showSprig = phase === 'incoming' || phase === 'eating';
-  const shift = -Math.min(eaten, leaves - 1) * LEAF_STEP;
+  // The sprig is drawn at 1.7× and placed so the leaf nearest the tip sits at
+  // Walla's mouth; after each bite it slides in so the next leaf is ready.
+  const SCALE = 1.7;
+  const originX = 100 + SCALE * (leaves * LEAF_STEP) + 2;
+  const shift = -Math.min(eaten, leaves - 1) * LEAF_STEP * SCALE;
 
   return (
     <div className={`walla-feed is-${phase}`} aria-live="polite">
@@ -166,14 +170,14 @@ export function WallaFeed({ leaves = 1, play = 0, size = 260 }: { leaves?: numbe
               <path d="M94 135q6 4 12 0" fill="#F28CA0" />
             </g>
             {/* a little leaf stuck to the cheek after the feast */}
-            <ellipse className="wf-crumb-stuck" cx="116" cy="125" rx="3.4" ry="2.2" fill={LEAF} transform="rotate(-25 116 125)" />
+            <ellipse className="wf-crumb-stuck" cx="117" cy="127" rx="4.6" ry="3" fill={LEAF} stroke={LEAF_EDGE} strokeWidth="1" transform="rotate(-25 117 127)" />
           </g>
         </g>
 
         {/* the eucalyptus sprig */}
         {showSprig && (
           <g className="wf-sprig-in">
-            <g transform={`translate(${136 + shift} 128)`} className="wf-sprig">
+            <g transform={`translate(${originX + shift} 138) scale(${SCALE})`} className="wf-sprig">
               <path d={`M0 0 L${-leaves * LEAF_STEP - 4} -4`} stroke="#8A7458" strokeWidth="2" strokeLinecap="round" />
               {Array.from({ length: leaves }, (_, k) => {
                 const x = -leaves * LEAF_STEP + k * LEAF_STEP;
