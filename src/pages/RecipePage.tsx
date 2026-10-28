@@ -18,6 +18,8 @@ import { useToast } from '../components/ui/Toast';
 import { Wordmark } from '../components/ui/Wordmark';
 import { usePageTitle } from '../lib/usePageTitle';
 import { NotFound } from './NotFound';
+import { haptic, isNativeApp } from '../lib/native';
+import { PLACE } from '../lib/native';
 import { courseStyle } from '../lib/courseColors';
 
 export function useScale(recipe: Recipe | undefined) {
@@ -67,6 +69,7 @@ export function RecipePage() {
   const toggleFavorite = async () => {
     try {
       await repo.updateRecipe(recipe.id, { isFavorite: !recipe.isFavorite });
+      void haptic(recipe.isFavorite ? 'tap' : 'success');
       toast.success(recipe.isFavorite ? 'Removed from favorites.' : 'Added to favorites.');
     } catch (err) {
       toast.error(storageErrorMessage(err));
@@ -153,9 +156,11 @@ export function RecipePage() {
             <ButtonLink to={`/recipes/${recipe.id}/edit`} variant="secondary" icon={<Pencil size={16} />}>
               Edit
             </ButtonLink>
-            <Button variant="secondary" icon={<Printer size={16} />} onClick={() => window.print()}>
-              Print / Save as PDF
-            </Button>
+            {!isNativeApp && (
+              <Button variant="secondary" icon={<Printer size={16} />} onClick={() => window.print()}>
+                Print / Save as PDF
+              </Button>
+            )}
             <Button variant="secondary" icon={<Share2 size={16} />} onClick={() => setShareOpen(true)}>
               Share
             </Button>
@@ -275,7 +280,7 @@ export function RecipePage() {
         title="Delete this recipe?"
         description={
           <p>
-            “{recipe.title}” will be removed from this browser. You can undo right after; otherwise it’s gone unless it’s in a backup.
+            “{recipe.title}” will be removed from {PLACE}. You can undo right after; otherwise it’s gone unless it’s in a backup.
           </p>
         }
         confirmLabel="Delete recipe"

@@ -41,7 +41,7 @@ export default defineConfig({
     cspPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      injectRegister: false,
       includeAssets: ['favicon.svg', 'icons/*.png'],
       manifest: {
         name: 'Let ’Em Cook',

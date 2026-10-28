@@ -3,6 +3,7 @@ import { Leaf } from 'lucide-react';
 import { WallaFeed } from '../components/walla/WallaFeed';
 import { TIP_OPTIONS, TIP_URL } from '../lib/tipJar';
 import { usePageTitle } from '../lib/usePageTitle';
+import { isIOSApp } from '../lib/native';
 
 /**
  * The tip jar. Let 'Em Cook is free forever; people who love it can buy
@@ -15,7 +16,9 @@ export function FeedWallaPage() {
   const [play, setPlay] = useState(0);
   const [leaves, setLeaves] = useState(1);
   const [fed, setFed] = useState(false);
-  const live = TIP_URL.trim() !== '';
+  // Apple requires tips inside iPhone apps to use In-App Purchase, so the app
+  // never links out to a web tip page. The feeding scene still works there.
+  const live = TIP_URL.trim() !== '' && !isIOSApp;
 
   const feed = (n: number) => {
     if (live) window.open(TIP_URL, '_blank', 'noopener,noreferrer');

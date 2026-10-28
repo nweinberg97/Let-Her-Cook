@@ -1,6 +1,7 @@
 import { extractRecipesFromHtml, pageToText } from '../parsing/jsonld';
 import { parseRecipeText } from '../parsing/text';
 import type { ExtractionResult } from './types';
+import { fetchPageNative, isNativeApp } from '../native';
 
 export type UrlImportErrorKind = 'invalid' | 'blocked' | 'http' | 'not-recipe' | 'timeout' | 'too-large';
 
@@ -74,8 +75,34 @@ async function readLimited(res: Response): Promise<string> {
  * allow this (CORS), and that's expected: we never route the request through a
  * proxy or a third-party service, so the caller falls back to pasted text.
  */
+async function fetchHtmlInApp(url: URL, signal?: AbortSignal): Promise<string> {
+  let res: Awaited<ReturnType<typeof fetchPageNative>>;
+  try {
+    res = await Promise.race([
+      fetchPageNative(url.href, TIMEOUT_MS),
+      new Promise<never>((_, reject) => signal?.addEventListener('abort', () => reject(new DOMException('Cancelled', 'AbortError'))))
+    ]);
+  } catch (err) {
+    if (signal?.aborted) throw err;
+    if (/time/i.test(String((err as Error)?.message))) throw new UrlImportError('timeout', 'The website took too long to answer.');
+    throw new UrlImportError('blocked', 'We couldn’t reach that website. Check your connection and the link.');
+  }
+  if (res.status >= 400) {
+    throw new UrlImportError(
+      'http',
+      res.status === 404 ? 'That page wasn’t found (404). Check the link.' : res.status === 403 ? 'This website blocks automatic importing.' : `The website refused the request (error ${res.status}).`
+    );
+  }
+  if (res.contentType && !/html|xml|text\/plain/i.test(res.contentType)) {
+    throw new UrlImportError('not-recipe', 'That link isn’t a web page we can read.');
+  }
+  if (res.body.length > MAX_PAGE_BYTES) throw new UrlImportError('too-large', 'That page is too large to import.');
+  return res.body;
+}
+
 export async function extractFromUrl(input: string, signal?: AbortSignal): Promise<ExtractionResult[]> {
   const url = validateRecipeUrl(input);
+  if (isNativeApp) return parsePage(await fetchHtmlInApp(url, signal), url);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   const onAbort = () => controller.abort();
@@ -114,6 +141,10 @@ export async function extractFromUrl(input: string, signal?: AbortSignal): Promi
     signal?.removeEventListener('abort', onAbort);
   }
 
+  return parsePage(html, url);
+}
+
+function parsePage(html: string, url: URL): ExtractionResult[] {
   const finalUrl = url.href;
   const { results, meta, doc } = extractRecipesFromHtml(html, finalUrl);
   if (results.length) return results;

@@ -1,5 +1,6 @@
 import { ButtonLink } from '../components/ui/Button';
 import { usePageTitle } from '../lib/usePageTitle';
+import { PLACE } from '../lib/native';
 
 export function NotFound({ what = 'page' }: { what?: 'page' | 'recipe' | 'collection' }) {
   usePageTitle('Not found');
@@ -10,7 +11,7 @@ export function NotFound({ what = 'page' }: { what?: 'page' | 'recipe' | 'collec
           {what === 'recipe' ? 'We can’t find that recipe' : what === 'collection' ? 'We can’t find that collection' : 'We can’t find that page'}
         </h1>
         <p className="empty__text">
-          {what === 'page' ? 'The link may be mistyped.' : 'It may have been deleted, or it was saved in a different browser. Recipes live in the browser they were saved in.'}
+          {what === 'page' ? 'The link may be mistyped.' : `It may have been deleted, or it was saved on a different device. Recipes live in ${PLACE === 'this app' ? 'the app' : 'the browser'} they were saved in.`}
         </p>
         <ButtonLink to="/" variant="primary">
           Go to my recipes

@@ -1,0 +1,23 @@
+{
+  "appId": "com.letemcook.app",
+  "appName": "Let ’Em Cook",
+  "webDir": "dist",
+  "backgroundColor": "#FFFAF3",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#FFFAF3",
+    "preferredContentMode": "mobile",
+    "allowsLinkPreview": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 800,
+      "launchAutoHide": false,
+      "backgroundColor": "#FFFAF3",
+      "showSpinner": false
+    },
+    "CapacitorHttp": {
+      "enabled": false
+    }
+  }
+}

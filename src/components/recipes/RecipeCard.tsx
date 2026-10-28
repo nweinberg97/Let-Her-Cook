@@ -8,6 +8,7 @@ import { courseStyle } from '../../lib/courseColors';
 import { useLibrary } from '../../lib/storage/LibraryContext';
 import { useToast } from '../ui/Toast';
 import { storageErrorMessage } from '../../lib/storage/repository';
+import { haptic } from '../../lib/native';
 
 export function RecipeCard({ recipe, query = '' }: { recipe: Recipe; query?: string }) {
   const { repo } = useLibrary();
@@ -18,6 +19,7 @@ export function RecipeCard({ recipe, query = '' }: { recipe: Recipe; query?: str
   const toggleFavorite = async () => {
     try {
       await repo.updateRecipe(recipe.id, { isFavorite: !recipe.isFavorite });
+      void haptic(recipe.isFavorite ? 'tap' : 'success');
     } catch (err) {
       toast.error(storageErrorMessage(err));
     }

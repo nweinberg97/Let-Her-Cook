@@ -10,6 +10,7 @@ import { Dialog } from '../components/ui/Dialog';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { useToast } from '../components/ui/Toast';
 import { usePageTitle } from '../lib/usePageTitle';
+import { isNativeApp, PLACE } from '../lib/native';
 
 const STRATEGY_COPY: Record<DuplicateStrategy, { label: string; hint: string }> = {
   skip: { label: 'Keep the versions I have now', hint: 'Recipes already here are left alone; only new ones are added.' },
@@ -35,7 +36,7 @@ export function DataPage() {
   const [clearOpen, setClearOpen] = useState(false);
   const [persisted, setPersisted] = useState<boolean | null>(null);
   const [estimate, setEstimate] = useState<{ usage: number; quota: number } | null>(null);
-  const storageApi = typeof navigator !== 'undefined' && navigator.storage;
+  const storageApi = !isNativeApp && typeof navigator !== 'undefined' ? navigator.storage : undefined;
 
   useEffect(() => {
     if (!storageApi) return;
@@ -46,7 +47,7 @@ export function DataPage() {
   const exportBackup = async () => {
     try {
       const backup = await repo.exportBackup();
-      downloadFile(JSON.stringify(backup, null, 2), backupFileName());
+      await downloadFile(JSON.stringify(backup, null, 2), backupFileName());
       await repo.updatePreferences({ lastBackupAt: new Date().toISOString() });
       toast.success(`Backup downloaded: ${backup.recipes.length} recipes, ${backup.collections.length} collections.`);
     } catch (err) {
@@ -98,7 +99,7 @@ export function DataPage() {
       <header className="page-header">
         <div>
           <h1 className="page-title">Backup &amp; privacy</h1>
-          <p className="page-lede">Your recipes live in this browser, on this device. Here’s how to keep them safe and take them with you.</p>
+          <p className="page-lede">Your recipes live {isNativeApp ? 'in this app, on this device' : 'in this browser, on this device'}. Here’s how to keep them safe and take them with you.</p>
         </div>
       </header>
 
@@ -157,7 +158,9 @@ export function DataPage() {
             Storage on this device
           </h2>
           <p>
-            Browsers can clear site data when a device runs low on space, and clearing your browsing data deletes it too. Asking for persistent storage makes that much less likely.
+            {isNativeApp
+              ? 'Recipes are saved inside the app and stay until you delete the app. Deleting the app deletes its recipes too, so keep a backup in Files or iCloud Drive.'
+              : 'Browsers can clear site data when a device runs low on space, and clearing your browsing data deletes it too. Asking for persistent storage makes that much less likely.'}
           </p>
           {estimate && estimate.quota > 0 && (
             <p className="data-card__meta">
@@ -191,11 +194,11 @@ export function DataPage() {
         <dl className="privacy__list">
           <div>
             <dt>Where recipes live</dt>
-            <dd>In this browser’s storage (IndexedDB) on this device. There’s no account and no server. Another browser or device won’t see them until you restore a backup there.</dd>
+            <dd>{isNativeApp ? 'In this app’s private storage on this device.' : 'In this browser’s storage (IndexedDB) on this device.'} There’s no account and no server. Another browser or device won’t see them until you restore a backup there.</dd>
           </div>
           <div>
             <dt>Not encrypted</dt>
-            <dd>Browser storage isn’t encrypted or password-protected. Anyone who can use this browser profile can open your recipes, so keep private recipes off shared computers.</dd>
+            <dd>{isNativeApp ? 'Recipes are kept in the app’s own storage, protected by your phone’s passcode. They aren’t encrypted separately, so anyone who can unlock this phone can open them.' : 'Browser storage isn’t encrypted or password-protected. Anyone who can use this browser profile can open your recipes, so keep private recipes off shared computers.'}</dd>
           </div>
           <div>
             <dt>Imports stay on the device</dt>
@@ -206,7 +209,7 @@ export function DataPage() {
           </div>
           <div>
             <dt>Links</dt>
-            <dd>When you import a link, your browser asks that website for the page directly, the same as visiting it. We don’t route it through anyone else, which is why some sites can’t be imported.</dd>
+            <dd>When you import a link, {isNativeApp ? 'the app' : 'your browser'} asks that website for the page directly, the same as visiting it. We don’t route it through anyone else, which is why some sites can’t be imported.</dd>
           </div>
           <div>
             <dt>No tracking</dt>
@@ -227,7 +230,7 @@ export function DataPage() {
         <h2 id="danger-h" className="section-title section-title--small">
           Start over
         </h2>
-        <p>Delete every recipe, collection and setting from this browser. Download a backup first if you might want them back.</p>
+        <p>Delete every recipe, collection and setting from {PLACE}. Download a backup first if you might want them back.</p>
         <Button variant="danger" icon={<Trash2 size={16} />} onClick={() => setClearOpen(true)} disabled={recipes.length === 0 && collections.length === 0}>
           Delete everything
         </Button>
@@ -298,7 +301,7 @@ export function DataPage() {
         title="Delete everything?"
         description={
           <p>
-            This permanently removes all {recipes.length} recipes and {collections.length} collections from this browser. It can’t be undone unless you have a backup.
+            This permanently removes all {recipes.length} recipes and {collections.length} collections from {PLACE}. It can’t be undone unless you have a backup.
           </p>
         }
         confirmLabel="Delete everything"
@@ -307,7 +310,7 @@ export function DataPage() {
           try {
             await repo.clearAll();
             setClearOpen(false);
-            toast.success('Everything was deleted from this browser.');
+            toast.success(`Everything was deleted from ${PLACE}.`);
           } catch (err) {
             toast.error(storageErrorMessage(err));
           }

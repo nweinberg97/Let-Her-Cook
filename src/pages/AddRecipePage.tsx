@@ -207,7 +207,7 @@ export function AddRecipePage() {
       <p className="privacy-note">
         <ShieldCheck size={16} aria-hidden="true" />
         <span>
-          Everything is read right here in your browser. Files and photos aren’t uploaded anywhere, and only the recipe you save is kept. <Link to="/data">How your data is stored</Link>
+          Everything is read right here on your device. Files and photos aren’t uploaded anywhere, and only the recipe you save is kept. <Link to="/data">How your data is stored</Link>
         </span>
       </p>
     </div>

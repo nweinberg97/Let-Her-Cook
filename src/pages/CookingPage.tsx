@@ -7,6 +7,7 @@ import { ServingScaler } from '../components/recipes/ServingScaler';
 import { useScale } from './RecipePage';
 import { usePageTitle } from '../lib/usePageTitle';
 import { NotFound } from './NotFound';
+import { haptic } from '../lib/native';
 import { courseStyle } from '../lib/courseColors';
 import { formatMinutes } from '../lib/parsing/quantity';
 
@@ -52,6 +53,7 @@ export function CookingPage() {
       if (n.has(sid)) n.delete(sid);
       else {
         n.add(sid);
+        void haptic('tap');
         if (index === current && index < steps.length - 1) setTimeout(() => goTo(index + 1), 150);
       }
       return n;
@@ -245,6 +247,7 @@ function useTimer() {
       chimed.current = true;
       chime();
       navigator.vibrate?.([300, 150, 300]);
+      void haptic('warning');
     }
   }, [remaining]);
 

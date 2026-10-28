@@ -7,6 +7,21 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Feel like an app on phones: no grey tap flash, no double-tap zoom delay. */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button,
+[role='tab'],
+.btn,
+.chip,
+.tabbar,
+.sidebar,
+.bubble {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 body {

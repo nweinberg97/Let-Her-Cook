@@ -285,7 +285,7 @@ export function FirstRun() {
         </li>
       </ul>
       <p className="first-run__footnote">
-        No account needed — recipes stay in this browser. Moving from another device? <Link to="/data">Restore a backup</Link> <ArrowRight size={14} aria-hidden="true" />
+        No account needed — recipes stay on this device. Moving from another device? <Link to="/data">Restore a backup</Link> <ArrowRight size={14} aria-hidden="true" />
       </p>
     </div>
   );

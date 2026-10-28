@@ -12,6 +12,7 @@ import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { useUnsavedGuard } from '../lib/useUnsavedGuard';
 import { usePageTitle } from '../lib/usePageTitle';
 import type { Recipe } from '../types/recipe';
+import { haptic } from '../lib/native';
 
 const CONFIDENCE_COPY = {
   high: 'Looks complete. Give it a quick check.',
@@ -64,6 +65,7 @@ export function ReviewPage() {
     setSaving(true);
     try {
       const saved = await repo.createRecipe(draft);
+      void haptic('success');
       guard.allowNavigation();
       markSaved(session.activeIndex);
       if (remaining > 0) {

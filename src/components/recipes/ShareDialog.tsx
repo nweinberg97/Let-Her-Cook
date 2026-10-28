@@ -3,6 +3,7 @@ import { Copy, Share2, Download, Check } from 'lucide-react';
 import type { Recipe } from '../../types/recipe';
 import { recipeToPlainText } from '../../lib/export/plainText';
 import { downloadFile, safeFileName } from '../../lib/export/download';
+import { canUseShareSheet, isNativeApp, shareContent } from '../../lib/native';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { useToast } from '../ui/Toast';
@@ -11,7 +12,7 @@ export function ShareDialog({ recipe, servings, open, onClose }: { recipe: Recip
   const toast = useToast();
   const [copied, setCopied] = useState(false);
   const text = recipeToPlainText(recipe, servings);
-  const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+  const canShare = canUseShareSheet();
 
   const copy = async () => {
     try {
@@ -26,9 +27,9 @@ export function ShareDialog({ recipe, servings, open, onClose }: { recipe: Recip
 
   const share = async () => {
     try {
-      await navigator.share({ title: recipe.title, text, ...(recipe.sourceUrl ? { url: recipe.sourceUrl } : {}) });
-    } catch (err) {
-      if ((err as { name?: string })?.name !== 'AbortError') toast.error('Sharing didn’t work here. Copy the recipe instead.');
+      await shareContent({ title: recipe.title, text, url: recipe.sourceUrl });
+    } catch {
+      toast.error('Sharing didn’t work here. Copy the recipe instead.');
     }
   };
 
@@ -39,7 +40,7 @@ export function ShareDialog({ recipe, servings, open, onClose }: { recipe: Recip
       title="Share this recipe"
       description={
         <p>
-          Your recipes live only in this browser, so there’s no link to send. Share it as text instead — whoever receives it can paste it into their own Let ’Em Cook.
+          Your recipes live only on this device, so there’s no link to send. Share it as text instead — whoever receives it can paste it into their own Let ’Em Cook.
         </p>
       }
       footer={
@@ -57,8 +58,8 @@ export function ShareDialog({ recipe, servings, open, onClose }: { recipe: Recip
         <Button variant={canShare ? 'secondary' : 'primary'} icon={copied ? <Check size={18} /> : <Copy size={18} />} onClick={copy}>
           {copied ? 'Copied' : 'Copy recipe'}
         </Button>
-        <Button variant="secondary" icon={<Download size={18} />} onClick={() => downloadFile(text, `${safeFileName(recipe.title)}.txt`, 'text/plain;charset=utf-8')}>
-          Download .txt
+        <Button variant="secondary" icon={<Download size={18} />} onClick={() => downloadFile(text, `${safeFileName(recipe.title)}.txt`, 'text/plain;charset=utf-8').catch(() => toast.error('We couldn’t save the file. Copy the recipe instead.'))}>
+          {isNativeApp ? 'Save as text file' : 'Download .txt'}
         </Button>
       </div>
       <label className="field__label" htmlFor="share-preview">

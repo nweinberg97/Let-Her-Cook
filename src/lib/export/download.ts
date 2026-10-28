@@ -1,5 +1,15 @@
-/** Saves a file to the user's device. The object URL is revoked right after. */
-export function downloadFile(content: string | Blob, fileName: string, type = 'application/json') {
+import { isNativeApp, saveFileNative } from '../native';
+
+/**
+ * Saves a file to the user's device. In the iPhone app this opens the share
+ * sheet ("Save to Files", AirDrop, Mail…); on the web it downloads.
+ */
+export async function downloadFile(content: string, fileName: string, type = 'application/json'): Promise<void> {
+  if (isNativeApp) return saveFileNative(content, fileName);
+  downloadInBrowser(content, fileName, type);
+}
+
+function downloadInBrowser(content: string | Blob, fileName: string, type: string) {
   const blob = content instanceof Blob ? content : new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

@@ -1,0 +1,125 @@
+name: iOS app build
+
+# Builds the iPhone/iPad app on a Mac, runs it in the iOS Simulator and takes
+# screenshots — proof that the app compiles and launches. The first run also
+# generates the Xcode project (ios/) and commits it to the repo.
+#
+# Results (simulator screenshots + build log) are pushed to the
+# `ios-build-output` branch.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'capacitor.config.json'
+      - 'package.json'
+      - 'ios/**'
+      - 'resources/ios/**'
+      - 'scripts/ios/**'
+      - 'src/lib/native.ts'
+      - '.github/workflows/ios.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ios-build
+  cancel-in-progress: true
+
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund
+          gem install xcodeproj --no-document
+          mkdir -p out
+          xcodebuild -version | tee out/xcode-version.txt
+
+      - name: Build the web app
+        run: npm run build
+
+      - name: Create or update the Xcode project
+        id: project
+        run: |
+          if [ ! -d ios ]; then
+            npx cap add ios 2>&1 | tee out/cap-add.log
+            echo "generated=1" >> "$GITHUB_OUTPUT"
+          fi
+          npx cap sync ios 2>&1 | tee out/cap-sync.log
+          BUILD_NUMBER=${{ github.run_number }} scripts/ios/configure.sh 2>&1 | tee out/configure.log
+
+      - name: Build for the iOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build 2>&1 | tee out/xcodebuild.log | grep -E "error:|warning: .*deprecated|BUILD (SUCCEEDED|FAILED)" || true
+          test -d build/Build/Products/Debug-iphonesimulator/App.app
+
+      - name: Run in the Simulator and take screenshots
+        run: |
+          APP=build/Build/Products/Debug-iphonesimulator/App.app
+          BUNDLE=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP/Info.plist")
+          pick() { xcrun simctl list devices available -j | python3 -c "
+          import json,sys,re
+          want=sys.argv[1]
+          devs=[d for rt,ds in json.load(sys.stdin)['devices'].items() if 'iOS' in rt for d in ds]
+          m=[d for d in devs if re.search(want,d['name'])]
+          print((m[-1] if m else devs[-1])['udid'])" "$1"; }
+          for spec in "iPhone.*Pro Max:iphone" "iPhone SE|iPhone 16e|iPhone 17e:iphone-small" "iPad Pro 13|iPad Pro \(12.9:ipad"; do
+            pattern=${spec%%:*}; name=${spec##*:}
+            UDID=$(pick "$pattern")
+            xcrun simctl list devices | grep "$UDID" | tee -a out/devices.txt
+            xcrun simctl boot "$UDID" || true
+            xcrun simctl bootstatus "$UDID" -b
+            xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+            xcrun simctl install "$UDID" "$APP"
+            xcrun simctl launch "$UDID" "$BUNDLE"
+            sleep 12
+            xcrun simctl io "$UDID" screenshot "out/sim-$name.png"
+            xcrun simctl shutdown "$UDID" || true
+          done
+
+      - name: Commit the generated Xcode project
+        if: steps.project.outputs.generated == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ios
+          git commit -m "Add generated iOS (Xcode) project"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Publish build output
+        if: always()
+        run: |
+          mkdir -p /tmp/output && cp -R out/. /tmp/output/ 2>/dev/null || true
+          cp ios/App/App/Info.plist /tmp/output/Info.plist 2>/dev/null || true
+          tail -n 200 out/xcodebuild.log > /tmp/output/xcodebuild-tail.log 2>/dev/null || true
+          grep -E "error:" out/xcodebuild.log > /tmp/output/errors.txt 2>/dev/null || true
+          rm -f /tmp/output/xcodebuild.log
+          echo "${{ job.status }} run ${{ github.run_number }} ${{ github.sha }}" > /tmp/output/STATUS.txt
+          cd /tmp/output
+          git init -q -b ios-build-output
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "iOS build output for ${{ github.sha }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" ios-build-output
