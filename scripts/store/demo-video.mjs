@@ -152,7 +152,9 @@ await pause(2200);
 await tap(page.locator('.feed-icon'));
 await pause(1300);
 await tap(page.locator('.feed-option', { hasText: 'A handful' }));
-await pause(7600);
+// Scroll back up so Walla eating is on screen.
+await smoothScroll(-3000, 700);
+await pause(7200);
 
 await context.close();
 await browser.close();
