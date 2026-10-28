@@ -38,7 +38,7 @@ const SHOTS = [
   { id: '02-import', route: '#/add?tab=photo', bg: '#FFF3C9', accent: '#8A5A00', title: 'Snap it. Paste it.\nSaved.', sub: 'Walla tidies up recipes from links, photos, PDFs and texts.' },
   { id: '03-recipe', route: '#/recipes/sample-ricotta-pancakes', bg: '#FFE3EA', accent: '#B02A52', title: 'Clean recipes.\nNo life story.', sub: 'Just ingredients and steps, scaled for however many you’re feeding.' },
   { id: '04-cook', route: '#/recipes/sample-sheet-pan-chicken/cook', bg: '#DCF5E7', accent: '#1D6F45', title: 'Cook with\nbig, calm steps.', sub: 'Built-in timers. Check things off as you go.', prep: 'cook' },
-  { id: '05-walla', route: '#/walla', bg: '#DFF0FF', accent: '#1D5EA3', title: 'Free forever.\nFueled by eucalyptus.', sub: 'No ads, no subscriptions. Your recipes stay on your phone.', prep: 'walla' }
+  { id: '05-walla', route: '#/walla', bg: '#DFF0FF', accent: '#1D5EA3', title: 'Free forever.\nFueled by eucalyptus.', titleScale: 0.8, sub: 'No ads, no subscriptions. Your recipes stay on your phone.', prep: 'walla' }
 ];
 
 const DEVICES = [
@@ -122,7 +122,7 @@ for (const device of DEVICES) {
   html,body{margin:0;width:${device.width}px;height:${device.height}px;overflow:hidden;background:${shot.bg};}
   .f{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;padding:${isPad ? 64 : 46}px ${isPad ? 64 : 26}px 0;box-sizing:border-box;
      background:radial-gradient(circle at 88% 8%, rgba(255,255,255,.55) 0 ${isPad ? 120 : 70}px, transparent ${isPad ? 121 : 71}px), radial-gradient(circle at 6% 60%, rgba(255,255,255,.35) 0 ${isPad ? 160 : 90}px, transparent ${isPad ? 161 : 91}px), ${shot.bg};}
-  h1{font-family:var(--font-display);font-weight:800;letter-spacing:-.045em;line-height:.98;text-align:center;color:#1E1B18;margin:0;font-size:${isPad ? 74 : 44}px;white-space:pre-line;}
+  h1{font-family:var(--font-display);font-weight:800;letter-spacing:-.045em;line-height:.98;text-align:center;color:#1E1B18;margin:0;font-size:${Math.round((isPad ? 74 : 44) * (shot.titleScale ?? 1))}px;white-space:pre-line;}
   p{font-family:var(--font-ui);font-weight:600;color:${shot.accent};text-align:center;margin:${isPad ? 22 : 14}px 0 0;font-size:${isPad ? 26 : 16}px;line-height:1.35;max-width:${isPad ? 760 : 360}px;}
   .shot{margin-top:${isPad ? 48 : 30}px;width:${isPad ? 78 : 80}%;border-radius:${isPad ? 36 : 40}px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(30,27,24,.45),0 0 0 ${isPad ? 10 : 8}px #1E1B18;background:#fff;}
   .shot img{display:block;width:100%;}
